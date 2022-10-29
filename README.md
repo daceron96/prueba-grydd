@@ -11,5 +11,13 @@
 "instalar requerimientos"
 "python pip install -r requirements.txt"
 
+"hacer migracions"
+"python manage.py makemigrations"
+"python manage.py migrate"
+
+"crear super usuario"
+"python manage.py createsuperuser"
+
 "iniciar el servidor"
+
 "python manage.py runserver"
