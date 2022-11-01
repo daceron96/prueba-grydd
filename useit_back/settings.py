@@ -1,4 +1,5 @@
 
+from datetime import timedelta
 import os
 from pathlib import Path
 
@@ -91,6 +92,14 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    # 'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    # 'ROTATE_REFRESH_TOKENS':True,
+    # 'BLACKLIST_AFTER_ROTATION':True
+    
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

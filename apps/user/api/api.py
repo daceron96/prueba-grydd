@@ -1,21 +1,23 @@
-from django.http import JsonResponse
+from rest_framework.response import Response
 from rest_framework import status, viewsets
 from apps.core.api.serializers import AddressSerializer, LocationSerializer
-from .serializers import UserSerializer, PersonSerializer
+from .serializers import UserSerializer, PersonSerializer, PersonSerializerList
 
 class PersonViewSet(viewsets.ModelViewSet):
   serializer_class = PersonSerializer
 
-  def get_queryset(self, pk=None):
-    if pk is None:
-      return self.get_serializer().Meta.model.objects.filter(state = True)
-    else:
-      return self.get_serializer().Meta.model.objects.filter(id=pk,state = True).first()
-    
+  def get_queryset(self):
+    nit = self.request.GET.get('nit')
+    query = self.get_serializer().Meta.model.objects.filter(company__nit = nit)
+    return query
+  
+  def list(self, request):
+    list_serializer = PersonSerializerList(self.get_queryset(), many = True)
+    return Response(list_serializer.data, status = status.HTTP_200_OK)
+
   
   def create(self, request):
     errors = {}
-    print('aca')
     serializer_person = self.serializer_class(data = request.data['person'])
     serializer_address = AddressSerializer(data = request.data['address'])
     serializer_location = LocationSerializer(data = request.data['location'])
@@ -43,6 +45,7 @@ class PersonViewSet(viewsets.ModelViewSet):
       location = serializer_location.save()
       user = serializer_user.save()
       serializer_person.create(serializer_person.validated_data, address, location, user )
-      return JsonResponse({'message':'Usuario registrado correctamente'}, status = status.HTTP_201_CREATED)
+      person = PersonSerializerList(serializer_person.data)
+      return Response(person.data, status = status.HTTP_201_CREATED)
 
-    return JsonResponse(errors, status = status.HTTP_400_BAD_REQUEST)
+    return Response(errors, status = status.HTTP_400_BAD_REQUEST)

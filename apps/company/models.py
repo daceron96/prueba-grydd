@@ -1,16 +1,6 @@
-from distutils.command.upload import upload
 from email.policy import default
-from enum import unique
 from django.db import models
 from apps.core.models import Address, Location
-
-class AccessHours(models.Model):
-
-  startTime = models.TimeField(auto_now=False, auto_now_add=False)
-  endtTime = models.TimeField(auto_now=False, auto_now_add=False)
-
-  def __str__(self):
-    return self.id 
 
 class Company(models.Model):
 
@@ -36,5 +26,15 @@ class CompanyPoint(models.Model):
   geolocation = models.CharField(max_length = 100, blank=True, null=True)
   state = models.BooleanField(default=True)
 
+
   def __str__(self):
-    return self.nit 
+    return self.name 
+
+class AccessHours(models.Model):
+
+  startTime = models.TimeField(auto_now=False, auto_now_add=False)
+  endTime = models.TimeField(auto_now=False, auto_now_add=False)
+  companyPoint = models.ForeignKey(CompanyPoint, on_delete = models.CASCADE)
+
+  def __str__(self):
+    return f'{self.id}'

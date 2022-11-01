@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.company.models import Company, CompanyPoint
+from apps.company.models import Company, CompanyPoint, AccessHours
 from apps.core.api.serializers import AddressSerializer, LocationSerializer
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -37,3 +37,15 @@ class CompanyPointSerializer(serializers.ModelSerializer):
     point.address = address
     point.save()
     return point
+
+class AccessHourPointSerializer(serializers.ModelSerializer):
+  
+  class Meta:
+    model = AccessHours
+    exclude = ['companyPoint']
+
+  def create(self, validated_data, point):
+    access = AccessHours(**validated_data)
+    access.companyPoint = point
+    access.save()
+    return access

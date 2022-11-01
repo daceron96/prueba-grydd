@@ -27,6 +27,12 @@ class PersonSerializer(serializers.ModelSerializer):
     person.save()
     return person  
 
+class PersonSerializerList(serializers.ModelSerializer):
+
+  class Meta:
+    model = Person
+    fields = ['names','surNames','email', 'phone', 'identifier', 'role']
+
 class UserSerializer(serializers.ModelSerializer):
 
   class Meta:

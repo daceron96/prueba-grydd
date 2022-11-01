@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Company, CompanyPoint, AccessHours
 
-# Register your models here.
+admin.site.register(Company)
+admin.site.register(CompanyPoint)
+admin.site.register(AccessHours)
