@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from apps.core.models import Location, Address
 
 class Person(models.Model):
-
   identifier = models.CharField(max_length = 100, unique=True)
   names = models.CharField(max_length = 100)
   surNames = models.CharField(max_length = 100)

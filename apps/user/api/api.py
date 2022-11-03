@@ -2,6 +2,12 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from apps.core.api.serializers import AddressSerializer, LocationSerializer
 from .serializers import UserSerializer, PersonSerializer, PersonSerializerList
+from rest_framework.generics import GenericAPIView
+from apps.company.models import AccessHistory
+from apps.user.models import Person
+
+from datetime import datetime
+
 
 class PersonViewSet(viewsets.ModelViewSet):
   serializer_class = PersonSerializer
@@ -49,3 +55,41 @@ class PersonViewSet(viewsets.ModelViewSet):
       return Response(person.data, status = status.HTTP_201_CREATED)
 
     return Response(errors, status = status.HTTP_400_BAD_REQUEST)
+
+
+class ValidateAccessPerson(GenericAPIView):
+
+  def get(self, request):
+    identifier = request.GET.get('identifier')
+    person = Person.objects.get(identifier = identifier)
+    accessHistory = AccessHistory.objects.filter(person = person, state=True).first()
+    if(accessHistory == None):
+      if(not person.state):
+        return Response({
+          'access':False, 
+          'message': 'Esta Persona esta suspendida'
+          }, status = status.HTTP_401_UNAUTHORIZED)
+
+      now = datetime.now().time()
+      accessHour = person.accessHour
+      if(accessHour.startTime <= now and accessHour.endTime >= now):
+        access = AccessHistory.objects.create(
+          person = person,
+          accessHour= accessHour,
+          user = request.user,
+        )
+        person.accessHistory = access
+        person.save()
+        return Response({
+            'access':True, 
+        'message':'Ingreso exitoso'
+        }, status = status.HTTP_200_OK)
+      return Response({
+        'access':False, 
+        'message':'La persona esta fuera de su horario de acceso'
+        }, status = status.HTTP_401_UNAUTHORIZED)
+    
+    return Response({
+      'access' : False,
+      'message' : 'Esta persona ya tiene un ingreso activo' 
+    }, status = status.HTTP_400_BAD_REQUEST)

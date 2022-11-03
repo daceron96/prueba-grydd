@@ -1,6 +1,6 @@
-from email.policy import default
 from django.db import models
 from apps.core.models import Address, Location
+from django.contrib.auth.models import User
 
 class Company(models.Model):
 
@@ -39,3 +39,18 @@ class AccessHours(models.Model):
 
   def __str__(self):
     return f'{self.name}'
+
+
+class AccessHistory(models.Model):
+  # The model was imported here because it generates an error in the header
+  from apps.user.models import Person
+
+  person = models.ForeignKey(Person, on_delete=models.CASCADE)
+  accessHour = models.ForeignKey(AccessHours, on_delete=models.CASCADE)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  checkIn = models.DateTimeField(auto_now_add = True, auto_now = False)
+  checkOut = models.DateTimeField(auto_now = True, auto_now_add = False)
+  state = models.BooleanField(default = True)
+
+  def __str__(self):
+    return f'{self.person.identifier}'
