@@ -8,7 +8,7 @@ class PersonViewSet(viewsets.ModelViewSet):
 
   def get_queryset(self):
     nit = self.request.GET.get('nit')
-    query = self.get_serializer().Meta.model.objects.filter(company__nit = nit)
+    query = self.get_serializer().Meta.model.objects.filter(companyPoint__company__nit = nit)
     return query
   
   def list(self, request):

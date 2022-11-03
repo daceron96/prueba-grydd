@@ -22,7 +22,7 @@ class Login(TokenObtainPairView):
           person.token = login_serializer.validated_data.get('access')
           person.save()
         except:
-          user_serializer = {'names':'SuperAdmin'}
+          user_serializer = {'names':'SuperAdmin','role':'admin'}
           
         return Response({
           'token' : login_serializer.validated_data.get('access'),

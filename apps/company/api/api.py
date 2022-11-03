@@ -44,7 +44,7 @@ class CompanyPointViewSet(viewsets.ModelViewSet):
   serializer_class = CompanyPointSerializer
 
   def get_queryset(self):
-    pk = self.request.GET.get('id')
+    pk = self.request.GET.get('nit')
     if pk is None:
       return self.get_serializer().Meta.model.objects.filter(state = True)
     else:
@@ -79,21 +79,19 @@ class CompanyPointViewSet(viewsets.ModelViewSet):
 class AccessHourViewSet(viewsets.ModelViewSet):
 
   serializer_class = AccessHourPointSerializer
-
+  
   def get_queryset(self):
-    pk = self.request.GET.get('id')
-    self.queryset = self.get_serializer().Meta.model.objects.filter(company_nit = pk)
+    pk = self.request.GET.get('idPoint')
+    self.queryset = self.get_serializer().Meta.model.objects.filter(companyPoint__pk = pk)
     return self.queryset
 
-  def list(self):
+  def list(self, request):
     access_serializer = self.serializer_class(self.get_queryset(), many = True)
     return Response(access_serializer.data, status = status.HTTP_200_OK)
 
   def create(self, request):
     access_serializer= self.serializer_class(data = request.data)
-    # companyPoint = request.data['companyPoint']
-    companyPoint = CompanyPoint.objects.get(company__nit = request.data['companyPoint'])
-    print(companyPoint)
+    companyPoint = CompanyPoint.objects.get(pk = request.data['companyPoint'])
     if access_serializer.is_valid():
       
       access_serializer.create(access_serializer.validated_data, companyPoint)

@@ -32,9 +32,10 @@ class CompanyPoint(models.Model):
 
 class AccessHours(models.Model):
 
+  name = models.CharField(max_length=100, blank=False, null=False)
   startTime = models.TimeField(auto_now=False, auto_now_add=False)
   endTime = models.TimeField(auto_now=False, auto_now_add=False)
   companyPoint = models.ForeignKey(CompanyPoint, on_delete = models.CASCADE)
 
   def __str__(self):
-    return f'{self.id}'
+    return f'{self.name}'

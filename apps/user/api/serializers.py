@@ -39,7 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
     model = User
     fields = '__all__'
 
-
   def create(self, validate_data):
     user = User(**validate_data)
     user.set_password(validate_data['password'])
@@ -49,7 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PersonLoginSerializer(serializers.ModelSerializer):
   class Meta:
     model = Person
-    fields = ['names','surNames','role']
+    fields = ['names','surNames','role', 'identifier']
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
   pass

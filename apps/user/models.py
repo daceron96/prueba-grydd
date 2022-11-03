@@ -1,6 +1,5 @@
-from email.policy import default
 from django.db import models
-from apps.company.models import Company
+from apps.company.models import CompanyPoint, AccessHours
 from django.contrib.auth.models import User
 from apps.core.models import Location, Address
 
@@ -9,7 +8,8 @@ class Person(models.Model):
   identifier = models.CharField(max_length = 100, unique=True)
   names = models.CharField(max_length = 100)
   surNames = models.CharField(max_length = 100)
-  company = models.ForeignKey(Company, on_delete = models.CASCADE)
+  companyPoint = models.ForeignKey(CompanyPoint, on_delete = models.CASCADE)
+  accessHour = models.ForeignKey(AccessHours, on_delete = models.CASCADE)
   phone = models.CharField(max_length = 100)
   location = models.ForeignKey(Location, on_delete = models.CASCADE, null=True)
   email = models.EmailField(max_length = 100)
@@ -18,5 +18,6 @@ class Person(models.Model):
   state = models.BooleanField(default = True)
   user = models.OneToOneField(User, on_delete = models.CASCADE, null=True)
   token = models.CharField(max_length = 100, blank = True, null = True)
+
   def __str__(self):
     return self.names
